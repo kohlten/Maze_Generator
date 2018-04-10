@@ -2,6 +2,8 @@ import dsfml.window;
 import dsfml.graphics;
 import dsfml.system;
 
+import stack;
+
 import std.conv : to;
 import std.stdio : writeln;
 import std.random : uniform, unpredictableSeed, Random;
@@ -10,26 +12,9 @@ import std.string;
 import std.range.primitives;
 import std.algorithm;
 
-immutable int cellHeight = 20;
+immutable int cellHeight = 10;
 
 Random rng;
-
-class Stack(T)
-{
-	T[] stack;
-
-	auto pop()
-	{
-		auto last = this.stack[this.stack.length - 1];
-		this.stack.popBack();
-		return last;
-	}
-
-	auto push(T node)
-	{
-		stack ~= node;
-	}
-}
 
 int isNull(T)(T[] arr)
 {
@@ -57,13 +42,13 @@ class Cell
 		foreach (i; 0 .. 4)
 		{
 			this.sides[i] = new RectangleShape();
-			this.sides[i].fillColor(Color(255, 255, 255, 50));
+			this.sides[i].fillColor(Color(255, 255, 255, 100));
 		}
 		this.setPositions();
 		this.visitedRect = new RectangleShape();
 		this.visitedRect.position = this.pos;
 		this.visitedRect.size(Vector2f(cellHeight, cellHeight));
-		this.visitedRect.fillColor(Color(255, 0, 0, 100));
+		this.visitedRect.fillColor(Color(255, 0, 0, 150));
 	}
 
 	void draw(RenderWindow window)
@@ -94,10 +79,14 @@ class Cell
 	Cell checkNeighbors(int width, int height, Cell[][] cells)
 	{
 		auto index = Vector2i(cast(int) this.pos.y / cellHeight, cast(int) this.pos.x / cellHeight);
+
 		Vector2i[] toCheck = [Vector2i(index.x - 1, index.y),
 			Vector2i(index.x, index.y - 1), Vector2i(index.x + 1, index.y), Vector2i(index.x, index.y + 1)];
+		
 		Cell[] neighbors = [null, null, null, null];
+		
 		int i;
+		
 		foreach (pos; toCheck)
 		{
 			if (pos.x >= 0 && pos.y >= 0 && pos.y < cells.length && pos.x < cells[0].length)
@@ -220,7 +209,7 @@ class Game
 				this.stack.push(this.current);
 				this.current = next;
 			}
-			else if (this.stack.stack.length > 0)
+			else if (this.stack.getLen() > 0)
 				this.current = this.stack.pop();
 			this.iterations++;
 		
@@ -237,6 +226,6 @@ class Game
 void main()
 {
 	rng = Random(unpredictableSeed);
-	auto main = new Game(501, 501, 60);
+	auto main = new Game(1001, 1001, 300);
 	main.run();
 }
