@@ -7,10 +7,6 @@ import stack;
 import std.conv : to;
 import std.stdio : writeln;
 import std.random : uniform, unpredictableSeed, Random;
-import std.math;
-import std.string;
-import std.range.primitives;
-import std.algorithm;
 
 immutable int cellHeight = 10;
 
