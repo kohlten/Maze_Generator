@@ -7,8 +7,9 @@ import stack;
 import std.conv : to;
 import std.stdio : writeln;
 import std.random : uniform, unpredictableSeed, Random;
+import std.datetime.stopwatch;
 
-immutable int cellHeight = 10;
+immutable int cellHeight = 5;
 
 Random rng;
 
@@ -140,6 +141,8 @@ class Game
 	int hCells;
 	int iterations;
 
+
+	ulong count;
 	bool updating = true;
 
 	RenderWindow window;
@@ -148,6 +151,8 @@ class Game
 	Color color;
 
 	Stack!Cell stack;
+
+	StopWatch sw;
 
 	this(int width, int height, int maxFPS)
 	{
@@ -169,6 +174,7 @@ class Game
 		this.current.visited = true;
 		this.color = Color.Black;
 		this.stack = new Stack!Cell();
+		sw.start();
 	}
 
 	void run()
@@ -188,9 +194,12 @@ class Game
 
 	void drawCells()
 	{
-		foreach (i; 0 .. this.wCells)
-			foreach (j; 0 .. this.hCells)
-				cells[i][j].draw(this.window);
+		if (!this.updating)
+		{
+			foreach (i; 0 .. this.wCells)
+				foreach (j; 0 .. this.hCells)
+					cells[i][j].draw(this.window);
+		}
 		this.current.highlight(this.window);
 	}
 
@@ -204,16 +213,20 @@ class Game
 				next.visited = true;
 				this.stack.push(this.current);
 				this.current = next;
+				this.count++;
 			}
 			else if (this.stack.getLen() > 0)
+			{
 				this.current = this.stack.pop();
+				this.count--;
+			}
 			this.iterations++;
-		
 			if (this.iterations > 0 && this.current.pos.x / cellHeight == 0 && this.current.pos.y / cellHeight == 0)
 			{
 				updating = false;
 				writeln("Done");
 				writeln("Took " ~ to!string(this.iterations) ~ " iterations!");
+				writeln("Took ", this.sw.peek());
 			}
 		}
 	}
@@ -222,6 +235,6 @@ class Game
 void main()
 {
 	rng = Random(unpredictableSeed);
-	auto main = new Game(1001, 1001, 300);
+	auto main = new Game(1001, 1001, 0);
 	main.run();
 }

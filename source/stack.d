@@ -1,23 +1,33 @@
-import std.range.primitives : popBack;
+..import linkedList;
 
 class Stack(T)
 {
-	private T[] stack;
+private:
+	LinkedList!T *arr;
+	ulong length;
 
-	auto pop()
+public:
+	T pop()
 	{
-		auto last = this.stack[this.stack.length - 1];
-		this.stack.popBack();
-		return last;
+		LinkedList!T *node = this.arr;
+		T data = node.data;
+
+		this.arr = this.arr.next;
+		freeNode(node);
+		this.length--;
+		return data;
 	}
 
-	auto push(T node)
+	T push(T data)
 	{
-		stack ~= node;
+		LinkedList!T *node = newNode(data, this.arr);
+		this.length++;
+		this.arr = node;
+		return this.arr.data;
 	}
 
 	ulong getLen()
 	{
-		return this.stack.length;
+		return this.length;
 	}
 }

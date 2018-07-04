@@ -1,0 +1,25 @@
+import std.container.Array.Range;
+
+class Stack(T)
+{
+private:
+	T[] arr;
+
+public:
+	T pop()
+	{
+		T data = this.arr[this.arr.length - 1];
+		return this.arr.popBack();
+	}
+
+	T push(T data)
+	{
+		this.arr ~= data;
+		return data;
+	}
+
+	ulong getLen()
+	{
+		return this.arr.length;
+	}
+}
