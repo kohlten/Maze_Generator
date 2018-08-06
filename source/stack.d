@@ -1,4 +1,4 @@
-..import linkedList;
+import linkedList;
 
 class Stack(T)
 {
