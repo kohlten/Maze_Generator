@@ -1,7 +1,3 @@
-import dsfml.window;
-import dsfml.graphics;
-import dsfml.system;
-
 import std.random;
 import globals;
 
